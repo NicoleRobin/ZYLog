@@ -1,0 +1,7 @@
+CC = g++
+
+example3: example3.cpp
+	${CC} -o $@ $< -llog4cplus -lpthread -lrt
+
+clean:
+	\rm example3
