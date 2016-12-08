@@ -37,7 +37,7 @@ void CZYLog::WriteLog(const char *filename, int line, const char *funcname, cons
 			local->tm_sec);
 
 	char szLog[LOG_BUF_SIZE + 1] = "";
-	snprintf(szLog, LOG_BUF_SIZE, "%s%s %s\r\n", szTime, szFile, szMsg);
+	snprintf(szLog, LOG_BUF_SIZE, "%s%s %s", szTime, szFile, szMsg);
 
-	printf("%s", szLog);
+	printf("%s\n", szLog);
 }
