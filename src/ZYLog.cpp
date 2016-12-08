@@ -1,11 +1,11 @@
 #include "ZYLog.h"
 #include <stdio.h>
 #include <stdarg.h>
-#include <time.h>
+#include <sys/time.h>
 
 
 #define LOG_BUF_SIZE 1024
-#define TIME_BUF_SIZE 24
+#define TIME_BUF_SIZE 32
 
 CZYLog* CZYLog::Instance()
 {
@@ -24,17 +24,19 @@ void CZYLog::WriteLog(const char *filename, int line, const char *funcname, cons
 	vsnprintf(szMsg, LOG_BUF_SIZE, msg, argList);
 	va_end(argList);
 
-	time_t tTime = time(NULL);
-	struct tm *local = localtime(&tTime);
+	timeval tv;
+	gettimeofday(&tv, NULL);
+	struct tm *local = localtime(&tv.tv_sec);
 
 	char szTime[TIME_BUF_SIZE + 1] = "";
-	snprintf(szTime, TIME_BUF_SIZE, "[%04d-%02d-%02d %02d:%02d:%02d]", 
+	snprintf(szTime, TIME_BUF_SIZE, "[%04d-%02d-%02d %02d:%02d:%02d.%06d]", 
 			local->tm_year + 1900, 
 			local->tm_mon + 1, 
 			local->tm_mday, 
 			local->tm_hour, 
 			local->tm_min, 
-			local->tm_sec);
+			local->tm_sec, 
+			(int)tv.tv_usec);
 
 	char szLog[LOG_BUF_SIZE + 1] = "";
 	snprintf(szLog, LOG_BUF_SIZE, "%s%s %s", szTime, szFile, szMsg);
