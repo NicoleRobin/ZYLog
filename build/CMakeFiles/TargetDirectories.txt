@@ -1,2 +1,0 @@
-/home/robin/ZYLog/build/CMakeFiles/edit_cache.dir
-/home/robin/ZYLog/build/CMakeFiles/rebuild_cache.dir
