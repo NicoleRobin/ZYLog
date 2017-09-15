@@ -1,8 +1,11 @@
 #include "ZYLog.h"
-#include <stdio.h>
-#include <stdarg.h>
+
 #include <sys/time.h>
 
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <errno.h>
 
 #define LOG_BUF_SIZE 1024
 #define TIME_BUF_SIZE 32
@@ -11,6 +14,20 @@ CZYLog* CZYLog::Instance()
 {
 	static CZYLog s_zylog;
 	return &s_zylog;
+}
+
+bool CZYLog::Init(std::string strFile)
+{
+	m_strFile = strFile;
+	m_pFile = fopen(strFile.c_str(), "a");	
+	if (m_pFile == NULL)
+	{
+		printf("open file[%s] failed, errno=%d, error=%s\n", strFile.c_str(), 
+				errno, strerror(errno));
+		return false;
+	}
+
+	return true;
 }
 
 void CZYLog::WriteLog(const char *filename, int line, const char *funcname, const char *logLevel, const char *msg, ...)
@@ -41,5 +58,12 @@ void CZYLog::WriteLog(const char *filename, int line, const char *funcname, cons
 	char szLog[LOG_BUF_SIZE + 1] = "";
 	snprintf(szLog, LOG_BUF_SIZE, "%s%s %s", szTime, szFile, szMsg);
 
-	printf("%s\n", szLog);
+	if (m_pFile)
+	{
+		fprintf(m_pFile, "%s\n", szLog);
+	}
+	else
+	{
+		printf("%s\n", szLog);
+	}
 }
